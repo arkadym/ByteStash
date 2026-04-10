@@ -15,6 +15,7 @@ const INLINE_MIME_TYPES = new Set([
 
 interface AttachmentListProps {
   snippetId: string;
+  shareId?: string;
 }
 
 function formatBytes(bytes: number): string {
@@ -23,17 +24,19 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-const AttachmentList: React.FC<AttachmentListProps> = ({ snippetId }) => {
+const AttachmentList: React.FC<AttachmentListProps> = ({ snippetId, shareId }) => {
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    attachmentService
-      .list(snippetId)
+    const fetch = shareId
+      ? attachmentService.listByShare(shareId)
+      : attachmentService.list(snippetId);
+    fetch
       .then(setAttachments)
       .catch(() => setAttachments([]))
       .finally(() => setLoading(false));
-  }, [snippetId]);
+  }, [snippetId, shareId]);
 
   if (loading || attachments.length === 0) return null;
 
@@ -46,10 +49,13 @@ const AttachmentList: React.FC<AttachmentListProps> = ({ snippetId }) => {
       <div className="flex flex-col gap-1">
         {attachments.map((a) => {
           const isInline = INLINE_MIME_TYPES.has(a.mime_type);
+          const href = shareId
+            ? attachmentService.getShareDownloadUrl(shareId, a.id)
+            : attachmentService.getDownloadUrl(snippetId, a.id);
           return (
             <a
               key={a.id}
-              href={attachmentService.getDownloadUrl(snippetId, a.id)}
+              href={href}
               {...(isInline
                 ? { target: '_blank', rel: 'noopener noreferrer' }
                 : { download: a.original_name })}
