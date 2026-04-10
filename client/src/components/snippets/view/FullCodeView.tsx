@@ -24,6 +24,7 @@ interface FullCodeViewProps {
   className?: string;
   isModal?: boolean;
   isPublicView?: boolean;
+  shareId?: string;
 }
 
 export const FullCodeView: React.FC<FullCodeViewProps> = ({
@@ -34,6 +35,7 @@ export const FullCodeView: React.FC<FullCodeViewProps> = ({
   className = "",
   isModal = false,
   isPublicView = false,
+  shareId,
 }) => {
   const { t: translate } = useTranslation('components/snippets/view/all');
   const [activeFragmentIndex, setActiveFragmentIndex] = useState(0);
@@ -182,7 +184,7 @@ export const FullCodeView: React.FC<FullCodeViewProps> = ({
           </div>
 
           {/* Attachments */}
-          {!isPublicView && <AttachmentList snippetId={snippet.id} />}
+          {(!isPublicView || shareId) && <AttachmentList snippetId={snippet.id} shareId={shareId} />}
         </div>
 
         {/* Download Archive Button */}
