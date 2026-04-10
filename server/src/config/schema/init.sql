@@ -86,3 +86,16 @@ WHERE
 CREATE INDEX IF NOT EXISTS idx_api_keys_user_id ON api_keys (user_id);
 
 CREATE INDEX IF NOT EXISTS idx_api_keys_key ON api_keys (key);
+
+CREATE TABLE IF NOT EXISTS attachments (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    snippet_id    INTEGER NOT NULL,
+    original_name TEXT NOT NULL,
+    stored_name   TEXT NOT NULL,
+    mime_type     TEXT NOT NULL,
+    size_bytes    INTEGER NOT NULL,
+    uploaded_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_attachments_snippet_id ON attachments (snippet_id);

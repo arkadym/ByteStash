@@ -12,6 +12,7 @@ import CategorySuggestions from "../../categories/CategorySuggestions";
 import FileUploadButton from "../../common/buttons/FileUploadButton";
 import Modal from "../../common/modals/Modal";
 import { FragmentEditor } from "./FragmentEditor";
+import AttachmentsEditor from "./AttachmentsEditor";
 
 export interface EditSnippetModalProps {
   isOpen: boolean;
@@ -487,6 +488,13 @@ const EditSnippetModal: React.FC<EditSnippetModalProps> = ({
                   {translate('editSnippetModal.form.isPublic.description')}
                 </p>
               </div>
+
+              {/* Attachments — only available for existing (saved) snippets */}
+              {snippetToEdit && (
+                <div>
+                  <AttachmentsEditor snippetId={snippetToEdit.id} />
+                </div>
+              )}
 
               {/* Code Fragments section */}
               <div>

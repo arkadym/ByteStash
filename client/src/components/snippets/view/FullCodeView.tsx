@@ -14,6 +14,7 @@ import {
 import { FullCodeBlock } from "../../editor/FullCodeBlock";
 import DownloadButton from "../../common/buttons/DownloadButton";
 import DownloadArchiveButton from "../../common/buttons/DownloadArchiveButton";
+import AttachmentList from "./AttachmentList";
 
 interface FullCodeViewProps {
   showTitle?: boolean;
@@ -179,6 +180,9 @@ export const FullCodeView: React.FC<FullCodeViewProps> = ({
               showAll={true}
             />
           </div>
+
+          {/* Attachments */}
+          {!isPublicView && <AttachmentList snippetId={snippet.id} />}
         </div>
 
         {/* Download Archive Button */}
