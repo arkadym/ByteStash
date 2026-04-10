@@ -2,7 +2,7 @@
   "name": "bytestash",
   "description": "A React and node.js app that stores code snippets",
   "author": "Jordan Dalby",
-  "version": "1.0.0",
+  "version": "1.5.11.1",
   "main": "server/app.js",
   "scripts": {
     "start": "cd client && npm start",

@@ -1,0 +1,69 @@
+name: Build and push Docker image
+
+# Triggers on every push to main.
+#
+# VERSION TRACKING
+# ================
+# The fork version lives in the root package.json "version" field.
+# Format: MAJOR.MINOR.PATCH.BUILD  (e.g. 1.5.11.1)
+#   - MAJOR.MINOR.PATCH = upstream ByteStash release this fork is based on
+#   - BUILD             = our own increment, starting at 1 for each upstream base
+#
+# To publish a new build:    bump BUILD in package.json (1.5.11.1 → 1.5.11.2) and push.
+# After syncing upstream:    merge github/main, update version to <new_upstream>.1 and push.
+#
+# Docker tags produced per build:
+#   ghcr.io/arkadym/bytestash:1.5.11.1   ← exact fork version
+#   ghcr.io/arkadym/bytestash:1.5.11     ← upstream base (MAJOR.MINOR.PATCH)
+#   ghcr.io/arkadym/bytestash:latest
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: linux
+    steps:
+      - name: Checkout
+        run: |
+          git clone --depth 1 \
+            "https://x-token:${{ gitea.token }}@gitea.tegro.org/${{ github.repository }}.git" \
+            --branch "${{ github.ref_name }}" \
+            .
+
+      - name: Determine image tags
+        run: |
+          IMAGE="ghcr.io/arkadym/bytestash"
+          VERSION=$(grep '"version"' package.json | head -1 | sed 's/.*"version": "\(.*\)".*/\1/')
+          # Strip the 4th segment to get the upstream base version tag
+          UPSTREAM="${VERSION%.*}"
+          TAGS="${IMAGE}:${VERSION} ${IMAGE}:${UPSTREAM} ${IMAGE}:latest"
+          echo "Fork version : ${VERSION}"
+          echo "Upstream base: ${UPSTREAM}"
+          echo "Docker tags  : ${TAGS}"
+          echo "DOCKER_TAGS=${TAGS}" >> "$GITHUB_ENV"
+
+      - name: Install Docker CLI
+        run: apk add --no-cache docker-cli
+
+      - name: Log in to GHCR
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | \
+            docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+      - name: Build and push
+        run: |
+          TAG_ARGS=""
+          for tag in $DOCKER_TAGS; do
+            TAG_ARGS="$TAG_ARGS -t $tag"
+          done
+          docker build $TAG_ARGS -f Dockerfile .
+          for tag in $DOCKER_TAGS; do
+            docker push "$tag"
+          done
+
+      - name: Docker logout
+        if: always()
+        run: docker logout ghcr.io
