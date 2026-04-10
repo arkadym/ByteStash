@@ -9,6 +9,7 @@ import oidcRoutes from "./routes/oidcRoutes.js";
 import embedRoutes from "./routes/embedRoutes.js";
 import apiKeyRoutes from "./routes/apiKeyRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import attachmentRoutes from "./routes/attachmentRoutes.js";
 import { authenticateToken } from "./middleware/auth.js";
 import { authenticateApiKey } from "./middleware/apiKeyAuth.js";
 import { requireAdmin } from "./middleware/adminAuth.js";
@@ -49,6 +50,12 @@ app.use(
   authenticateApiKey,
   authenticateToken,
   snippetRoutes
+);
+app.use(
+  `${basePath}/api/snippets/:snippetId/attachments`,
+  authenticateApiKey,
+  authenticateToken,
+  attachmentRoutes
 );
 app.use(`${basePath}/api/share`, shareRoutes);
 app.use(`${basePath}/api/public/snippets`, publicRoutes);

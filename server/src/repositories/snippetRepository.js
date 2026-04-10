@@ -39,10 +39,12 @@ class SnippetRepository {
           s.is_favorite,
           u.username,
           GROUP_CONCAT(DISTINCT c.name) as categories,
-          (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count
+          (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count,
+          GROUP_CONCAT(DISTINCT a.original_name) as attachment_names
         FROM snippets s
         LEFT JOIN categories c ON s.id = c.snippet_id
         LEFT JOIN users u ON s.user_id = u.id
+        LEFT JOIN attachments a ON s.id = a.snippet_id
         WHERE s.user_id = ? AND s.expiry_date IS NULL
         GROUP BY s.id
         ORDER BY s.updated_at DESC
@@ -60,10 +62,12 @@ class SnippetRepository {
           s.is_favorite,
           u.username,
           GROUP_CONCAT(DISTINCT c.name) as categories,
-          (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count
+          (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count,
+          GROUP_CONCAT(DISTINCT a.original_name) as attachment_names
         FROM snippets s
         LEFT JOIN categories c ON s.id = c.snippet_id
         LEFT JOIN users u ON s.user_id = u.id
+        LEFT JOIN attachments a ON s.id = a.snippet_id
         WHERE s.is_public = 1 AND s.expiry_date IS NULL 
         GROUP BY s.id
         ORDER BY s.updated_at DESC
@@ -142,10 +146,12 @@ class SnippetRepository {
           s.is_favorite,
           u.username,
           GROUP_CONCAT(DISTINCT c.name) as categories,
-          (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count
+          (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count,
+          GROUP_CONCAT(DISTINCT a.original_name) as attachment_names
         FROM snippets s
         LEFT JOIN categories c ON s.id = c.snippet_id
         LEFT JOIN users u ON s.user_id = u.id
+        LEFT JOIN attachments a ON s.id = a.snippet_id
         WHERE s.user_id = ? AND s.expiry_date IS NOT NULL
         GROUP BY s.id
         ORDER BY s.updated_at DESC
@@ -168,10 +174,12 @@ class SnippetRepository {
           s.is_favorite,
           u.username,
           GROUP_CONCAT(DISTINCT c.name) as categories,
-          (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count
+          (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count,
+          GROUP_CONCAT(DISTINCT a.original_name) as attachment_names
         FROM snippets s
         LEFT JOIN categories c ON s.id = c.snippet_id
         LEFT JOIN users u ON s.user_id = u.id
+        LEFT JOIN attachments a ON s.id = a.snippet_id
         WHERE s.id = ? AND (s.user_id = ? OR s.is_public = 1) AND s.expiry_date IS NULL
         GROUP BY s.id
       `);
@@ -188,10 +196,12 @@ class SnippetRepository {
           s.is_favorite,
           u.username,
           GROUP_CONCAT(DISTINCT c.name) as categories,
-          (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count
+          (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count,
+          GROUP_CONCAT(DISTINCT a.original_name) as attachment_names
         FROM snippets s
         LEFT JOIN categories c ON s.id = c.snippet_id
         LEFT JOIN users u ON s.user_id = u.id
+        LEFT JOIN attachments a ON s.id = a.snippet_id
         WHERE s.id = ? AND s.is_public = TRUE AND s.expiry_date IS NULL
         GROUP BY s.id
       `);
@@ -237,6 +247,7 @@ class SnippetRepository {
     return {
       ...snippet,
       categories: snippet.categories ? snippet.categories.split(",") : [],
+      attachment_names: snippet.attachment_names ? snippet.attachment_names.split(",") : [],
       fragments: fragments.sort((a, b) => a.position - b.position),
       share_count: snippet.share_count || 0,
     };
@@ -499,11 +510,13 @@ class SnippetRepository {
           s.is_favorite,
           u.username,
           GROUP_CONCAT(DISTINCT c.name) as categories,
+          GROUP_CONCAT(DISTINCT a.original_name) as attachment_names,
           (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count,
           COUNT(*) OVER() as total_count
         FROM snippets s
         LEFT JOIN categories c ON s.id = c.snippet_id
         LEFT JOIN users u ON s.user_id = u.id
+        LEFT JOIN attachments a ON s.id = a.snippet_id
         WHERE 1=1
       `;
 
