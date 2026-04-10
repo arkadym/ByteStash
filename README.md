@@ -1,4 +1,8 @@
-# ByteStash
+# ByteStash (personal fork)
+
+> **This is a personal fork of [jordan-dalby/ByteStash](https://github.com/jordan-dalby/ByteStash).**  
+> See [About this fork](#about-this-fork) below before using it.
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/jordan-dalby/ByteStash/refs/heads/main/client/public/logo192.png" />
 </p>
@@ -63,6 +67,33 @@ services:
 ## API Documentation
 Once the server is running you can explore the API via Swagger UI. Open
 `/api-docs` in your browser to view the documentation for all endpoints.
+
+---
+
+## About this fork
+
+This is a personal fork maintained by [@arkadym](https://github.com/arkadym) for personal use. A few things to know upfront:
+
+**This is not a maintained open source project.**  
+I forked this to add features I personally need. I don't have the time to maintain it as a proper open source project — triaging issues, reviewing PRs, keeping documentation complete, ensuring backwards compatibility, etc. If you use this fork, you do so at your own risk.
+
+**Development is AI-assisted.**  
+I'm a developer, but Node.js/React/SQLite are not my primary stack. I use GitHub Copilot and other AI tools heavily for development work on this repo. The code should be correct and reasoned through, but it may not always follow idiomatic patterns for this stack.
+
+**No plans to contribute back upstream.**  
+Contributing back to [jordan-dalby/ByteStash](https://github.com/jordan-dalby/ByteStash) would require properly preparing pull requests, coordinating on design, and maintaining compatibility with upstream direction — more ongoing effort than I can commit to. I may change my mind one day.
+
+**What's different in this fork:**
+
+| Feature | Status | Doc |
+|---------|--------|-----|
+| File attachments (attach any file to a snippet) | Planned | [docs/feature-file-attachments.md](docs/feature-file-attachments.md) |
+| Improved expiry & recycle bin (background scheduler, split columns) | Planned | [docs/feature-expiry-recyclebin.md](docs/feature-expiry-recyclebin.md) |
+| PostgreSQL support | **Rejected** — see reasoning | [docs/decision-no-postgresql.md](docs/decision-no-postgresql.md) |
+
+To sync with upstream: `git fetch github && git merge github/main`
+
+---
 
 ## Contributing
 Contributions are welcome! Please submit a pull request or open an issue for any improvements or bug fixes.
