@@ -13,6 +13,7 @@ export interface Snippet {
   updated_at: string;
   expiry_date?: string;
   categories: string[];
+  attachment_names?: string[];
   fragments: CodeFragment[];
   share_count?: number;
   is_public: number;

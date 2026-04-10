@@ -62,9 +62,22 @@ router.get('/:attachmentId/download', async (req, res) => {
 
     const { attachment, filePath } = result;
 
-    // Force download (never inline) to prevent XSS from HTML/SVG files
-    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(attachment.original_name)}"`);
-    res.setHeader('Content-Type', 'application/octet-stream');
+    // These types are safe to render inline — browsers treat them as data, not executable code.
+    // SVG is intentionally excluded (it can contain <script> tags → XSS).
+    const inlineMimeTypes = new Set([
+      'application/pdf',
+      'image/png',
+      'image/jpeg',
+      'image/gif',
+      'image/webp',
+      'image/bmp',
+    ]);
+    const disposition = inlineMimeTypes.has(attachment.mime_type)
+      ? `inline; filename="${encodeURIComponent(attachment.original_name)}"`
+      : `attachment; filename="${encodeURIComponent(attachment.original_name)}"`;
+
+    res.setHeader('Content-Disposition', disposition);
+    res.setHeader('Content-Type', attachment.mime_type);
     res.setHeader('Content-Length', attachment.size_bytes);
 
     res.sendFile(filePath, { root: '/' }, (err) => {

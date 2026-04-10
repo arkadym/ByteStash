@@ -7,6 +7,7 @@ import {
   Globe,
   Pin,
   Star,
+  Paperclip,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { formatDistanceToNow } from "date-fns";
@@ -322,6 +323,20 @@ export const SnippetCard: React.FC<SnippetCardProps> = ({
                 variant="clickable"
                 showAll={expandCategories}
               />
+            </div>
+          )}
+
+          {snippet.attachment_names && snippet.attachment_names.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 mb-3">
+              <Paperclip size={13} className="shrink-0 text-light-text-secondary dark:text-dark-text-secondary" />
+              {snippet.attachment_names.map((name) => (
+                <span
+                  key={name}
+                  className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-light-hover dark:bg-dark-hover text-light-text-secondary dark:text-dark-text-secondary"
+                >
+                  {name}
+                </span>
+              ))}
             </div>
           )}
 

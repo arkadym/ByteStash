@@ -49,8 +49,10 @@ class AttachmentService {
     ensureDir(dir);
     const destPath = join(dir, storedName);
 
-    // multer already wrote to a temp path — move it into the snippet dir
-    fs.renameSync(file.path, destPath);
+    // multer writes to OS tmp which may be on a different fs/device than the data volume.
+    // fs.renameSync fails across devices (EXDEV), so copy then remove instead.
+    fs.copyFileSync(file.path, destPath);
+    fs.unlinkSync(file.path);
 
     return attachmentRepository.create({
       snippetId,
