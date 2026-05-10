@@ -5,7 +5,7 @@ COPY client/package.json ./
 RUN npm install --package-lock-only
 RUN npm ci
 COPY client/ ./
-RUN npm run build
+RUN NODE_OPTIONS=--max-old-space-size=2048 npm run build
 
 # Production stage
 FROM node:22-alpine AS production
