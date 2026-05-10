@@ -123,7 +123,7 @@ export const SearchAndFilter: React.FC<SearchAndFilterProps> = memo(({
         />
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <IconButton
           icon={<Grid size={20} />}
           onClick={() => setViewMode("grid")}
@@ -146,16 +146,15 @@ export const SearchAndFilter: React.FC<SearchAndFilterProps> = memo(({
           label={translate('action.openSettings')}
         />
         {!hideNewSnippet && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {!hideRecycleBin && (
               <IconButton
                 icon={<Plus size={20} />}
                 label={translate('action.newSnippet')}
                 onClick={openNewSnippetModal}
                 variant="action"
-                className="h-10 px-4 sm:pl-2 sm:pr-4"
+                className="h-10 pl-2 pr-4"
                 showLabel
-                labelClassName="hidden sm:inline"
               />
             )}
             <IconButton

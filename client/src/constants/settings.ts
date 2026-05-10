@@ -10,4 +10,4 @@ export const DEFAULT_SETTINGS = {
   theme: 'system',
 } as const;
 
-export const APP_VERSION = '1.5.11.4';
+export const APP_VERSION = '1.5.11.5';
