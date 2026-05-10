@@ -153,8 +153,9 @@ export const SearchAndFilter: React.FC<SearchAndFilterProps> = memo(({
                 label={translate('action.newSnippet')}
                 onClick={openNewSnippetModal}
                 variant="action"
-                className="h-10 pl-2 pr-4"
+                className="h-10 px-4 sm:pl-2 sm:pr-4"
                 showLabel
+                labelClassName="hidden sm:inline"
               />
             )}
             <IconButton

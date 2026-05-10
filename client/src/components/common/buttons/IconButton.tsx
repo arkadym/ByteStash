@@ -10,6 +10,7 @@ export interface IconButtonProps {
   className?: string;
   type?: 'button' | 'submit' | 'reset';
   showLabel?: boolean;
+  labelClassName?: string;
 }
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
@@ -21,7 +22,8 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
   disabled = false,
   className = '',
   type = 'button',
-  showLabel = false
+  showLabel = false,
+  labelClassName = ''
 }, ref) => {
   const baseClasses = 'flex items-center justify-center gap-2 rounded-md transition-colors';
   const variantClasses = {
@@ -55,7 +57,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
       aria-label={label}
     >
       {icon}
-      {(label && showLabel) && <span>{label}</span>}
+      {(label && showLabel) && <span className={labelClassName}>{label}</span>}
     </button>
   );
 });
